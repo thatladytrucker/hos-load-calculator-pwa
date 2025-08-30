@@ -1,7 +1,7 @@
 {
-  "name": "hos-load-calculator-pwa",
+  "name": "hos-load-calculator-base",
   "private": true,
-  "version": "0.0.1",
+  "version": "6.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,8 +13,6 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.3",
-    "vite-plugin-pwa": "^0.20.0"
+    "vite": "^5.4.0"
   }
 }
