@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Toya’s HOS Load Calculator — UI Mock (New Status Row)</title>
+<style>
+  :root{
+    --bg: #0d1117;          /* page background (dark) */
+    --panel: #161b22;       /* card/panel background */
+    --muted: #8b949e;       /* secondary text */
+    --text: #e6edf3;        /* primary text */
+    --brand: #0ea5e9;       /* accent (buttons) */
+    --chip-on: #22c55e;     /* ONTIME */
+    --chip-ok: #3b82f6;     /* OK */
+    --chip-late: #ef4444;   /* LATE */
+    --chip-bg: #0b1220;     /* chip idle bg */
+    --ring: #30363d;        /* subtle borders */
+    --tile: #0f1524;        /* small tiles */
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 6px 18px rgba(0,0,0,.25);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    color:var(--text);
+    background:linear-gradient(180deg,#0b1020 0%, #0d1117 100%);
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:20vh; /* space under content on phones */
+  }
+
+  .wrap{
+    max-width:980px;
+    margin-inline:auto;
+    padding:16px;
+  }
+
+  header{
+    display:flex; gap:12px; align-items:center; justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .title{
+    font-weight:700; letter-spacing:.2px;
+    font-size: clamp(18px, 2.2vw, 22px);
+  }
+  .subtitle{color:var(--muted); font-size:12px}
+
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--ring);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+  }
+
+  /* STATUS ROW (new chips layout) */
+  .status-panel{padding:12px}
+  .chips{
+    display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  }
+  .chip{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--chip-bg);
+    border:1px solid var(--ring);
+    border-radius:999px;
+    padding:8px 12px;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.2px;
+    opacity:.95;
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+    user-select:none; cursor:pointer;
+  }
+  .chip .dot{
+    width:10px; height:10px; border-radius:999px; background:#999;
+    box-shadow:0 0 0 3px rgba(255,255,255,.06) inset;
+  }
+  .chip:active{transform:translateY(1px)}
+  .chip.active{box-shadow:0 0 0 2px rgba(255,255,255,.08)}
+  .chip[data-type="ontime"] .dot{background:var(--chip-on)}
+  .chip[data-type="ok"] .dot{background:var(--chip-ok)}
+  .chip[data-type="late"] .dot{background:var(--chip-late)}
+  .chip.active[data-type="ontime"]{border-color:color-mix(in srgb, var(--chip-on) 60%, white 0%)}
+  .chip.active[data-type="ok"]{border-color:color-mix(in srgb, var(--chip-ok) 60%, white 0%)}
+  .chip.active[data-type="late"]{border-color:color-mix(in srgb, var(--chip-late) 60%, white 0%)}
+
+  /* INPUTS */
+  .section{margin-top:14px}
+  .section h3{
+    margin:0 0 10px; padding:12px 14px; font-size:14px; font-weight:800;
+    color:var(--muted); text-transform:uppercase; letter-spacing:.22em
+  }
+  .inputs{display:grid; gap:10px; padding:14px}
+  @media (min-width:720px){ .inputs{grid-template-columns:1fr 1fr} }
+
+  .field{
+    display:grid; gap:6px; padding:12px; background:var(--tile);
+    border:1px solid var(--ring); border-radius:var(--radius-sm);
+  }
+  .label{font-size:12px; color:var(--muted); letter-spacing:.02em}
+  input, select{
+    width:100%; background:#0b101a; color:var(--text);
+    border:1px solid var(--ring); border-radius:10px; padding:10px 12px;
+    font-size:14px; outline:none;
+  }
+  .buttons{display:flex; gap:10px; padding:0 14px 14px}
+  .btn{
+    appearance:none; border:none; border-radius:12px; padding:12px 16px;
+    font-weight:800; letter-spacing:.02em; cursor:pointer;
+  }
+  .btn.primary{background:var(--brand); color:#001521}
+  .btn.ghost{
+    background:transparent; color:var(--text); border:1px solid var(--ring)
+  }
+
+  /* APPOINTMENTS + SUMMARY TILES */
+  .cards{display:grid; gap:12px; padding:14px}
+  @media (min-width:720px){ .cards{grid-template-columns:repeat(2,1fr)} }
+  .card{
+    background:var(--tile); border:1px solid var(--ring);
+    border-radius:var(--radius-sm); padding:14px; display:grid; gap:8px;
+  }
+  .card h4{margin:0; font-size:12px; color:var(--muted); letter-spacing:.12em}
+
+  .summary{
+    display:grid; gap:12px; padding:14px
+  }
+  @media (min-width:660px){ .summary{grid-template-columns:repeat(4,1fr)} }
+  .tile{
+    background:var(--tile); border:1px solid var(--ring);
+    border-radius:16px; padding:14px; display:grid; gap:8px;
+  }
+  .badge{
+    display:inline-flex; align-items:center; gap:8px; font-weight:900;
+    padding:6px 10px; border-radius:999px; font-size:12px; width:max-content;
+    border:1px solid var(--ring); background:#0d1322;
+  }
+  .when{font-size:13px; line-height:1.25}
+  .small{font-size:11px; color:var(--muted)}
+
+  /* small helper color pills for tiles */
+  .pill{display:inline-block; width:10px; height:10px; border-radius:999px}
+  .pill.on{background:var(--chip-on)}
+  .pill.ok{background:var(--chip-ok)}
+  .pill.late{background:var(--chip-late)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="title">Toya’s HOS Load Calculator</div>
+        <div class="subtitle">PWA • Works offline after first load</div>
+      </div>
+    </header>
+
+    <!-- NEW STATUS ROW -->
+    <div class="panel status-panel" role="group" aria-label="Status">
+      <div class="chips" id="chipRow">
+        <div class="chip active" data-type="ontime" role="button" aria-pressed="true">
+          <span class="dot" aria-hidden="true"></span> ON&nbsp;TIME
+        </div>
+        <div class="chip" data-type="ok" role="button" aria-pressed="false">
+          <span class="dot" aria-hidden="true"></span> OK
+        </div>
+        <div class="chip" data-type="late" role="button" aria-pressed="false">
+          <span class="dot" aria-hidden="true"></span> LATE
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUTS -->
+    <div class="panel section">
+      <h3>Inputs</h3>
+      <div class="inputs">
+        <div class="field">
+          <div class="label">PTA (Start time)</div>
+          <input type="datetime-local" />
+        </div>
+        <div class="field">
+          <div class="label">Average MPH</div>
+          <input type="number" value="50" />
+        </div>
+        <div class="field">
+          <div class="label">Empty Miles → Shipper</div>
+          <input type="number" value="0" />
+        </div>
+        <div class="field">
+          <div class="label">Loaded Miles → Final</div>
+          <input type="number" value="0" />
+        </div>
+        <div class="field">
+          <div class="label">Stop Type @ Shipper</div>
+          <select>
+            <option>-- Select --</option>
+            <option>Drop & Hook (30 min)</option>
+            <option>Live Load (120 min)</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="label">Stop Type @ Final</div>
+          <select>
+            <option>-- Select --</option>
+            <option>Drop & Hook (30 min)</option>
+            <option>Live Unload (120 min)</option>
+          </select>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="btn primary">Calculate</button>
+        <button class="btn ghost">New Trip</button>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="panel section">
+      <h3>Appointments</h3>
+      <div class="cards">
+        <div class="card">
+          <h4>Shipper Appt</h4>
+          <div class="label">Start</div>
+          <input type="datetime-local" />
+          <div class="label">End</div>
+          <input type="datetime-local" />
+        </div>
+        <div class="card">
+          <h4>Final Appt</h4>
+          <div class="label">Start</div>
+          <input type="datetime-local" />
+          <div class="label">End</div>
+          <input type="datetime-local" />
+        </div>
+      </div>
+      <div class="small" style="padding:0 14px 14px">
+        Hard appt: Start = End (e.g., 10:00–10:00). Window appt: Start–End (e.g., 10:00–23:59).
+        All projections assume a full 70/14/11 clock. Driver is responsible for actual hours.
+      </div>
+    </div>
+
+    <!-- ROWS OF SUMMARY CARDS -->
+    <div class="panel section">
+      <div class="summary">
+        <div class="tile" aria-live="polite">
+          <span class="badge"><span class="pill on"></span> ARRIVAL (SHIPPER)</span>
+          <div class="when">Aug 30, 2025<br/>11:41 AM</div>
+        </div>
+        <div class="tile">
+          <span class="badge"><span class="pill ok"></span> PTA AFTER STOP</span>
+          <div class="when">Aug 30, 2025<br/>11:41 AM</div>
+        </div>
+        <div class="tile">
+          <span class="badge"><span class="pill ok"></span> ETA (FINAL)</span>
+          <div class="when">Aug 30, 2025<br/>11:41 AM</div>
+        </div>
+        <div class="tile">
+          <span class="badge"><span class="pill ok"></span> PTA AFTER FINAL</span>
+          <div class="when">Aug 30, 2025<br/>11:41 AM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="small" style="text-align:center; opacity:.75; margin-top:18px">
+      Build v6.1b • Visual mock only
+    </div>
+  </div>
+
+<script>
+  // Simple demo: clicking a chip makes it the active status
+  const chipRow = document.getElementById('chipRow');
+  chipRow.addEventListener('click', (e)=>{
+    const chip = e.target.closest('.chip');
+    if(!chip) return;
+    document.querySelectorAll('.chip').forEach(c=>{
+      c.classList.remove('active');
+      c.setAttribute('aria-pressed','false');
+    });
+    chip.classList.add('active');
+    chip.setAttribute('aria-pressed','true');
+  });
+</script>
+</body>
+</html>
