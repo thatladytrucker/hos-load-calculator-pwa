@@ -1,88 +1,65 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Toya’s HOS Load Calculator — UI Mock (New Status Row)</title>
-<style>
-  :root{
-    --bg: #0d1117;          /* page background (dark) */
-    --panel: #161b22;       /* card/panel background */
-    --muted: #8b949e;       /* secondary text */
-    --text: #e6edf3;        /* primary text */
-    --brand: #0ea5e9;       /* accent (buttons) */
-    --chip-on: #22c55e;     /* ONTIME */
-    --chip-ok: #3b82f6;     /* OK */
-    --chip-late: #ef4444;   /* LATE */
-    --chip-bg: #0b1220;     /* chip idle bg */
-    --ring: #30363d;        /* subtle borders */
-    --tile: #0f1524;        /* small tiles */
-    --radius: 14px;
-    --radius-sm: 10px;
-    --shadow: 0 6px 18px rgba(0,0,0,.25);
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Status Row Mock</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      text-align: center;
+    }
+    .status-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+    .status {
+      padding: 8px 16px;
+      border-radius: 20px;
+      color: white;
+      font-weight: bold;
+    }
+    .ontime { background: green; }
+    .ok { background: blue; }
+    .late { background: red; }
 
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-    color:var(--text);
-    background:linear-gradient(180deg,#0b1020 0%, #0d1117 100%);
-    -webkit-font-smoothing:antialiased;
-    padding-bottom:20vh; /* space under content on phones */
-  }
+    .row {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 10px 0;
+    }
+    .box {
+      padding: 12px 18px;
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="status-row">
+    <div class="status ontime">🟢 ONTIME</div>
+    <div class="status ok">🔵 OK</div>
+    <div class="status late">🔴 LATE</div>
+  </div>
 
-  .wrap{
-    max-width:980px;
-    margin-inline:auto;
-    padding:16px;
-  }
+  <div class="row">
+    <div class="box">Arrival (Shipper)</div>
+    <div class="box">PTA After Stop</div>
+  </div>
 
-  header{
-    display:flex; gap:12px; align-items:center; justify-content:space-between;
-    margin-bottom:10px;
-  }
-  .title{
-    font-weight:700; letter-spacing:.2px;
-    font-size: clamp(18px, 2.2vw, 22px);
-  }
-  .subtitle{color:var(--muted); font-size:12px}
-
-  .panel{
-    background:var(--panel);
-    border:1px solid var(--ring);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-  }
-
-  /* STATUS ROW (new chips layout) */
-  .status-panel{padding:12px}
-  .chips{
-    display:flex; gap:8px; align-items:center; flex-wrap:wrap;
-  }
-  .chip{
-    display:inline-flex; align-items:center; gap:8px;
-    background:var(--chip-bg);
-    border:1px solid var(--ring);
-    border-radius:999px;
-    padding:8px 12px;
-    font-weight:700;
-    font-size:13px;
-    letter-spacing:.2px;
-    opacity:.95;
-    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-    user-select:none; cursor:pointer;
-  }
-  .chip .dot{
-    width:10px; height:10px; border-radius:999px; background:#999;
-    box-shadow:0 0 0 3px rgba(255,255,255,.06) inset;
-  }
-  .chip:active{transform:translateY(1px)}
-  .chip.active{box-shadow:0 0 0 2px rgba(255,255,255,.08)}
-  .chip[data-type="ontime"] .dot{background:var(--chip-on)}
-  .chip[data-type="ok"] .dot{background:var(--chip-ok)}
-  .chip[data-type="late"] .dot{background:var(--chip-late)}
+  <div class="row">
+    <div class="box">ETA (Final)</div>
+    <div class="box">PTA After Final</div>
+  </div>
+</body>
+</html>  .chip[data-type="late"] .dot{background:var(--chip-late)}
   .chip.active[data-type="ontime"]{border-color:color-mix(in srgb, var(--chip-on) 60%, white 0%)}
   .chip.active[data-type="ok"]{border-color:color-mix(in srgb, var(--chip-ok) 60%, white 0%)}
   .chip.active[data-type="late"]{border-color:color-mix(in srgb, var(--chip-late) 60%, white 0%)}
