@@ -11,6 +11,8 @@
       padding: 20px;
       text-align: center;
     }
+
+    /* Status Row */
     .status-row {
       display: flex;
       justify-content: center;
@@ -28,56 +30,10 @@
     .ok { background: blue; }
     .late { background: red; }
 
+    /* Input Rows */
     .row {
       display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin: 10px 0;
-    }
-    .box {
-      padding: 12px 18px;
-      background: white;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-    }
-  </style>
-</head>
-<body>
-  <div class="status-row">
-    <div class="status ontime">🟢 ONTIME</div>
-    <div class="status ok">🔵 OK</div>
-    <div class="status late">🔴 LATE</div>
-  </div>
-
-  <div class="row">
-    <div class="box">Arrival (Shipper)</div>
-    <div class="box">PTA After Stop</div>
-  </div>
-
-  <div class="row">
-    <div class="box">ETA (Final)</div>
-    <div class="box">PTA After Final</div>
-  </div>
-</body>
-</html>  .chip[data-type="late"] .dot{background:var(--chip-late)}
-  .chip.active[data-type="ontime"]{border-color:color-mix(in srgb, var(--chip-on) 60%, white 0%)}
-  .chip.active[data-type="ok"]{border-color:color-mix(in srgb, var(--chip-ok) 60%, white 0%)}
-  .chip.active[data-type="late"]{border-color:color-mix(in srgb, var(--chip-late) 60%, white 0%)}
-
-  /* INPUTS */
-  .section{margin-top:14px}
-  .section h3{
-    margin:0 0 10px; padding:12px 14px; font-size:14px; font-weight:800;
-    color:var(--muted); text-transform:uppercase; letter-spacing:.22em
-  }
-  .inputs{display:grid; gap:10px; padding:14px}
-  @media (min-width:720px){ .inputs{grid-template-columns:1fr 1fr} }
-
-  .field{
-    display:grid; gap:6px; padding:12px; background:var(--tile);
-    border:1px solid var(--ring); border-radius:var(--radius-sm);
-  }
-  .label{font-size:12px; color:var(--muted); letter-spacing:.02em}
+      justify-content: center;  .label{font-size:12px; color:var(--muted); letter-spacing:.02em}
   input, select{
     width:100%; background:#0b101a; color:var(--text);
     border:1px solid var(--ring); border-radius:10px; padding:10px 12px;
