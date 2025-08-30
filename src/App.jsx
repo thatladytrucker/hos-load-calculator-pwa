@@ -1,71 +1,86 @@
 import React, { useState } from "react";
 
-const Capsule = ({ active, color, label }) => (
-  <span
-    className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold border
-      ${active ? "opacity-100" : "opacity-60"}
-    `}
-    style={{ borderColor: color }}
-  >
-    <span style={{ color }}>●</span>
-    <span>{label}</span>
-  </span>
-);
+/** ---- Editable constants ---- */
+const STOP_DWELL_MINUTES = {
+  "None / Pass-through": 0,
+  "Drop & Hook": 45,
+  "Live Load": 120,
+  "Live Unload": 120,
+  "Fuel Only": 15
+};
+// “OK” means inside window but tight (<= this many minutes remaining)
+const OK_MARGIN_MIN = 30;
+
+/** ---- Helpers ---- */
+const toLocalInputValue = (dt) => {
+  // format Date -> yyyy-mm-ddThh:mm for <input type="datetime-local">
+  const pad = (n) => String(n).padStart(2, "0");
+  const y = dt.getFullYear();
+  const m = pad(dt.getMonth() + 1);
+  const d = pad(dt.getDate());
+  const h = pad(dt.getHours());
+  const mi = pad(dt.getMinutes());
+  return `${y}-${m}-${d}T${h}:${mi}`;
+};
+
+const fromLocalInputValue = (str) => (str ? new Date(str) : null);
+
+const addMinutes = (date, minutes) =>
+  new Date(date.getTime() + minutes * 60 * 1000);
+
+const minutesBetween = (a, b) => Math.round((b - a) / 60000);
+
+const fmt = (date) =>
+  date
+    ? date.toLocaleString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit"
+      })
+    : "—";
+
+/** ---- Status logic ----
+ * - If final window provided:
+ *    - Hard appt if Start === End (to the minute)
+ *    - LATE if ETA > End (hard or window)
+ *    - OK if inside window and (End - ETA) <= OK_MARGIN_MIN
+ *    - ONTIME if inside window with more buffer, or early (ETA < Start)
+ * - If no window provided: default to ONTIME (we can still show ETA)
+ */
+const computeStatus = (eta, start, end) => {
+  if (!eta || !start || !end) return "ontime";
+  const hard = start.getTime() === end.getTime();
+  if (eta > end) return "late";
+  if (hard) {
+    return minutesBetween(eta, end) <= OK_MARGIN_MIN ? "ok" : "ontime";
+  }
+  const minsLeft = minutesBetween(eta, end);
+  if (eta < start) return "ontime"; 
+  if (minsLeft <= OK_MARGIN_MIN) return "ok";
+  return "ontime";
+};
 
 export default function App() {
-  const [status, setStatus] = useState("ONTIME");
+  /** Inputs */
+  const [ptaStart, setPtaStart] = useState(toLocalInputValue(new Date()));
+  const [emptyMiles, setEmptyMiles] = useState("0");
+  const [loadedMiles, setLoadedMiles] = useState("0");
+  const [mph, setMph] = useState("50");
+  const [stopShipper, setStopShipper] = useState("None / Pass-through");
+  const [stopFinal, setStopFinal] = useState("None / Pass-through");
+  const [apply92, setApply92] = useState(true);
 
-  return (
-    <div className="page">
-      <header className="top">
-        <h1>HOS Load Calculator</h1>
-        <p className="disclaimer">
-          This app assists planning. Follow HOS guidelines—you are responsible for your CDL.
-        </p>
-      </header>
+  // Appointments
+  const [shipStart, setShipStart] = useState("");
+  const [shipEnd, setShipEnd] = useState("");
+  const [finalStart, setFinalStart] = useState("");
+  const [finalEnd, setFinalEnd] = useState("");
 
-      {/* Status Row: one row, 3 statuses side-by-side */}
-      <section className="status-row">
-        <button onClick={() => setStatus("ONTIME")} className="chip">
-          <Capsule active={status==="ONTIME"} color="#16a34a" label="🟢 ONTIME" />
-        </button>
-        <button onClick={() => setStatus("OK")} className="chip">
-          <Capsule active={status==="OK"} color="#2563eb" label="🔵 OK" />
-        </button>
-        <button onClick={() => setStatus("LATE")} className="chip">
-          <Capsule active={status==="LATE"} color="#dc2626" label="🔴 LATE" />
-        </button>
-      </section>
-
-      {/* Two rows of fields */}
-      <section className="grid">
-        <div className="cell">
-          <label>Arrival (Shipper)</label>
-          <input placeholder="e.g., 08:30" inputMode="numeric" />
-        </div>
-        <div className="cell">
-          <label>PTA After Stop</label>
-          <input placeholder="e.g., 10:15" inputMode="numeric" />
-        </div>
-
-        <div className="cell">
-          <label>ETA (Final)</label>
-          <input placeholder="e.g., 14:45" inputMode="numeric" />
-        </div>
-        <div className="cell">
-          <label>PTA After Final</label>
-          <input placeholder="e.g., 16:00" inputMode="numeric" />
-        </div>
-      </section>
-
-      <section className="actions">
-        <button className="primary">Calculate</button>
-        <button className="ghost">New Trip</button>
-      </section>
-
-      <footer className="foot">
-        <small>© {new Date().getFullYear()} HOS Calc</small>
-      </footer>
-    </div>
-  );
-}
+  /** Outputs */
+  const [status, setStatus] = useState(null); 
+  const [out, setOut] = useState({
+    arrShipper: null,
+    ptaAfterStop: null,
+    etaFinal: null,
