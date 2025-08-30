@@ -1,37 +1,131 @@
+:root {
+  --bg: #0b0f14;
+  --card: #11161d;
+  --muted: #6b7785;
+  --text: #e8edf3;
+  --ring: #1f2937;
+  --green: #22c55e;
+  --blue: #3b82f6;
+  --red: #ef4444;
+  --pill: #0f1620;
+  --pill-border: #263142;
+}
+
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
-body { margin: 0; font-family: system-ui, sans-serif; background:#0b0b0f; color:#e5e7eb; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: var(--bg);
+  color: var(--text);
+}
 
-.page { max-width: 680px; margin: 0 auto; padding: 16px 16px 40px; }
-.top { margin-bottom: 12px; }
-h1 { margin: 0 0 6px; font-size: 22px; }
-.disclaimer { font-size: 12px; color:#94a3b8; }
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px 16px 64px;
+}
 
-.status-row { display:flex; gap:10px; margin: 12px 0 18px; flex-wrap: wrap; }
-.chip { background: transparent; border: none; padding: 0; }
+.header {
+  background: var(--card);
+  border: 1px solid var(--pill-border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
 
-.grid {
+.header h1 {
+  margin: 0;
+  font-size: 18px;
+}
+.badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  font-size: 12px;
+  background: #0c1a2b;
+  border: 1px solid var(--pill-border);
+  border-radius: 999px;
+  color: #9fb3c8;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--pill-border);
+  border-radius: 16px;
+  padding: 16px;
+  margin: 10px 0 14px;
+}
+
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.row-1 { grid-template-columns: 1fr; }
+
+label { font-size: 13px; color: #b9c6d6; display: block; margin-bottom: 6px; }
+
+input, select {
+  width: 100%;
+  background: #0f1620;
+  border: 1px solid var(--pill-border);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+}
+
+small.hint { color: var(--muted); display: block; margin-top: 8px; }
+
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+button {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--pill-border);
+  background: #192233;
+  color: var(--text);
+  cursor: pointer;
+}
+button.primary { background: #ff6a1a; border-color: #ff6a1a; color: #0b0f14; font-weight: 700; }
+button:disabled { opacity: .6; cursor: not-allowed; }
+
+.status-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin: 10px 0 6px;
+}
+
+.status-pill {
+  flex: 1 1 0;
+  text-align: center;
+  padding: 10px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  border: 1px solid var(--pill-border);
+  background: var(--pill);
+  color: #99a9bd;
+  user-select: none;
+}
+.status-pill.green.active { background: var(--green); color: #041108; border-color: var(--green); }
+.status-pill.blue.active  { background: var(--blue);  color: #07101c; border-color: var(--blue); }
+.status-pill.red.active   { background: var(--red);   color: #160404; border-color: var(--red); }
+
+.outputs {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-}
-.cell { display:flex; flex-direction:column; gap:6px; background:#111827; border:1px solid #1f2937; padding:12px; border-radius:12px; }
-label { font-size: 12px; color:#9ca3af; }
-input {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid #374151;
-  background: #0b0b0f;
-  color: #e5e7eb;
-  font-size: 16px;
+  margin-top: 8px;
 }
 
-.actions { display:flex; gap: 10px; margin: 16px 0 12px; }
-.primary {
-  background:#0ea5e9; color:#0b0b0f; border:none; padding:12px 14px; border-radius:12px; font-weight:700;
+.pill {
+  background: #0f1620;
+  border: 1px solid var(--pill-border);
+  border-radius: 16px;
+  padding: 12px;
 }
-.ghost {
-  background:transparent; color:#e5e7eb; border:1px solid #334155; padding:12px 14px; border-radius:12px; font-weight:700;
-}
+.pill .label { color: #aab8c7; font-size: 12px; margin-bottom: 4px; }
+.pill .value { font-weight: 800; font-size: 16px; line-height: 1.25; }
 
-.foot { margin-top: 20px; color:#94a3b8; }
+.footer {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+  margin-top: 12px;
+}
